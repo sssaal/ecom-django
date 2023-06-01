@@ -8,7 +8,8 @@ PILIHAN_KATEGORI = (
     ('SW', 'Sport wear'),
     ('OW', 'Outwear'),
     ('T', 'Tops'),
-    ('P', 'Pants')
+    ('P', 'Pants'),
+    ('SC', 'Scraf'),
 )
 
 PILIHAN_LABEL = (
