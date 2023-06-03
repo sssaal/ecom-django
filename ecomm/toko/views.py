@@ -306,3 +306,7 @@ def add_item_order_summary(request, slug):
             pesan = f"Produk Item berhasil ditambah"
             messages.info(request, pesan)
             return redirect('toko:order-summary')
+
+def contact(request):
+    template_name = 'contact.html'
+    return render(request, template_name)
