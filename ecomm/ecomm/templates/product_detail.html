@@ -47,15 +47,15 @@
                         {% endif %}
                     </p>
 
-                    <strong><p style="font-size: 20px;">Deskripsi</p></strong>
-
-                    <p>{{ object.deskripsi }}</p>
+                    <strong><p style="font-size: 20px;">Description</p></strong>
+                    
+                    <p> {{ object.deskripsi }} </p>
                     <a href="{{ object.get_add_to_cart_url }}" class="btn btn-primary ms-1">
-                        Tambah ke keranjang
+                        Add To Cart
                         <i class="fas fa-shopping-cart ms-1"></i>
                     </a>
                     <a href="{{ object.get_remove_from_cart_url }}" class="btn btn-danger ms-1" >
-                        Kurangi keranjang
+                        Remove From Cart
                         <i class="fas fa-shopping-cart ms-1"></i>
                     </a>
                 </div>
