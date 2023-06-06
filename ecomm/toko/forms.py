@@ -4,7 +4,7 @@ from django_countries.widgets import CountrySelectWidget
 
 PILIHAN_PEMBAYARAN = (
     ('P', 'Paypal'),
-    ('S', 'Stripe'),
+    ('C', 'COD'),
 )
 
 class CheckoutForm(forms.Form):
@@ -14,3 +14,9 @@ class CheckoutForm(forms.Form):
     kode_pos = forms.CharField(widget=forms.TextInput(attrs={'class': 'textinput form-outline', 'placeholder': 'Kode Pos'}))
     simpan_info_alamat = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
     opsi_pembayaran = forms.ChoiceField(widget=forms.RadioSelect(), choices=PILIHAN_PEMBAYARAN)
+    
+class ContactForm(forms.Form):
+    name = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'name', 'class': 'textinput form-control'}))
+    email = forms.EmailField(required=True, widget=forms.TextInput(attrs={'placeholder': 'email', 'class': 'textinput form-control'}))
+    subject = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'subject', 'class': 'textinput form-control'}))
+    message = forms.CharField(required=True, widget=forms.Textarea(attrs={'placeholder': 'message', 'class': 'textinput form-control'}))

@@ -60,12 +60,12 @@
                 <td>
                     <form action="{% url 'toko:remove-from-order' pItem.produk_item.slug %}" method="POST">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                        <button type="submit" class="btn btn-danger btn-sm">Remove</button>
                     </form>
                     <br>
                     <form action="{% url 'toko:add-from-order' pItem.produk_item.slug %}" method="POST">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-primary btn-sm">Tambah</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Add</button>
                     </form>
                 </td>
             </tr>

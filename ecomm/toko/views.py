@@ -2,14 +2,15 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils import timezone
 from django.views import generic
 from paypal.standard.forms import PayPalPaymentsForm
 
 
-from .forms import CheckoutForm
-from .models import ProdukItem, OrderProdukItem, Order, AlamatPengiriman, Payment, PILIHAN_KATEGORI
+from .forms import CheckoutForm, ContactForm
+from .models import ProdukItem, OrderProdukItem, Order, AlamatPengiriman, Payment, PILIHAN_KATEGORI, Review, Contact
 
 class HomeListView(generic.ListView):
     template_name = 'home.html'
@@ -38,6 +39,13 @@ class HomeListView(generic.ListView):
 class ProductDetailView(generic.DetailView):
     template_name = 'product_detail.html'
     queryset = ProdukItem.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['review_set'] = Review.objects.filter(produk_item=self.object)
+        context["avg_rating"] = Review.objects.filter(produk_item=self.object).aggregate(Avg("rating"))["rating__avg"]
+        print(context["avg_rating"])
+        return context
 
 class CheckoutView(LoginRequiredMixin, generic.FormView):
     def get(self, *args, **kwargs):
@@ -83,7 +91,7 @@ class CheckoutView(LoginRequiredMixin, generic.FormView):
                 if opsi_pembayaran == 'P':
                     return redirect('toko:payment', payment_method='paypal')
                 else:
-                    return redirect('toko:payment', payment_method='stripe')
+                    return redirect('toko:payment', payment_method='cod')
 
             messages.warning(self.request, 'Gagal checkout')
             return redirect('toko:checkout')
@@ -110,6 +118,23 @@ class PaymentView(LoginRequiredMixin, generic.FormView):
         
             qPath = self.request.get_full_path()
             isPaypal = 'paypal' in qPath
+            isCod = 'cod' in qPath
+
+            if isCod:
+                payment = Payment()
+                payment.user = self.request.user
+                payment.amount = order.get_total_harga_order()
+                payment.payment_option = 'C'
+                payment.charge_id = f'{order.id}-{timezone.now()}'
+                payment.timestamp = timezone.now()
+                payment.save()
+                order_produk_item = OrderProdukItem.objects.filter(user=self.request.user, ordered=False)
+                order_produk_item.update(ordered=True)
+                order.payment = payment
+                order.ordered = True
+                order.save()
+                messages.success(self.request, 'Pesanan berhasil dibuat dengan metode pembayaran COD, silahkan tunggu konfirmasi dari admin')
+                return redirect('toko:home-produk-list')
         
             form = PayPalPaymentsForm(initial=paypal_data)
             context = {
@@ -306,6 +331,32 @@ def add_item_order_summary(request, slug):
             messages.info(request, pesan)
             return redirect('toko:order-summary')
 
-def contact(request):
-    template_name = 'contact.html'
-    return render(request, template_name)
+class ContactView(LoginRequiredMixin, generic.FormView):
+    def get(self, *args, **kwargs):
+        form = ContactForm()
+        context = {
+            'form': form
+        }
+        template_name = 'contact.html'
+        return render(self.request, template_name, context)
+
+    def post(self, *args, **kwargs):
+        form = ContactForm(self.request.POST or None)
+        print(self.request.POST)
+        try:
+            if form.is_valid():
+                name = form.cleaned_data['name']
+                email = form.cleaned_data['email']
+                subject = form.cleaned_data['subject']
+                message = form.cleaned_data['message']
+                contact = Contact(nama=name, email=email, pesan=message, subjek=subject)
+                contact.save()
+                messages.info(self.request, 'Pesan sudah terkirim')
+                return redirect('toko:contact')
+            else:
+                messages.info(self.request, form.errors)
+                logging.error(form.errors)
+                return redirect('toko:contact')
+        except:
+            messages.info(self.request, form.errors)
+            return redirect('toko:contact')

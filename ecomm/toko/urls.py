@@ -16,6 +16,5 @@ urlpatterns = [
      path('search/', views.SearchListView.as_view(), name='search-results'), 
      path('remove_from_order/<slug>/', views.remove_single_item_order_summary, name='remove-from-order'),
      path('add_from_order/<slug>/', views.add_item_order_summary, name='add-from-order'),
-     path('contact/', views.contact, name='contact'),
-
+     path('contact/', views.ContactView.as_view(), name='contact'),
 ]

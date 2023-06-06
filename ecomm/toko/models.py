@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
+from django.db.models import Avg
 
 PILIHAN_KATEGORI = (
     
@@ -18,7 +20,7 @@ PILIHAN_LABEL = (
 
 PILIHAN_PEMBAYARAN = (
     ('P', 'Paypal'),
-    ('S', 'Stripe'),
+    ('C', 'COD'),
 )
 
 User = get_user_model()
@@ -32,6 +34,9 @@ class ProdukItem(models.Model):
     gambar = models.ImageField(upload_to='product_pics')
     label = models.CharField(choices=PILIHAN_LABEL, max_length=4)
     kategori = models.CharField(choices=PILIHAN_KATEGORI, max_length=2)
+    addonsGambarSatu = models.ImageField(upload_to='product_pics', blank=True, null=True)
+    addonsGambarDua = models.ImageField(upload_to='product_pics', blank=True, null=True)
+    addonsGambarTiga = models.ImageField(upload_to='product_pics', blank=True, null=True)
 
     def __str__(self):
         return f"{self.nama_produk} - ${self.harga}"
@@ -61,22 +66,22 @@ class OrderProdukItem(models.Model):
         return f"{self.quantity} of {self.produk_item.nama_produk}"
 
     def get_total_harga_item(self):
-        return self.quantity * self.produk_item.harga
+        return round(self.quantity * self.produk_item.harga, 2)
     
     def get_total_harga_diskon_item(self):
-        return self.quantity * self.produk_item.harga_diskon
+        return round(self.quantity * self.produk_item.harga_diskon, 2)
 
     def get_total_hemat_item(self):
-        return self.get_total_harga_item() - self.get_total_harga_diskon_item()
+        return round(self.get_total_harga_item() - self.get_total_harga_diskon_item(), 2)
     
     def get_total_item_keseluruan(self):
         if self.produk_item.harga_diskon:
-            return self.get_total_harga_diskon_item()
-        return self.get_total_harga_item()
+            return round(self.get_total_harga_diskon_item(), 2)
+        return round(self.get_total_harga_item(), 2)
     
     def get_total_hemat_keseluruhan(self):
         if self.produk_item.harga_diskon:
-            return self.get_total_hemat_item()
+            return round(self.get_total_hemat_item(), 2)
         return 0
 
 
@@ -133,3 +138,30 @@ class Payment(models.Model):
     
     class Meta:
         verbose_name_plural = 'Payment'
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    produk_item = models.ForeignKey(ProdukItem, on_delete=models.CASCADE)
+    rating = models.IntegerField(default=1, validators=[MaxValueValidator(5), MinValueValidator(1)])
+    komentar = models.TextField()
+
+    def _str_(self):
+        return f"{self.user.username} - {self.produk_item.nama_produk}"
+
+    def average_rating(self) -> float:
+        return self.rating.aggregate(Avg('rating'))['rating__avg']
+
+    class Meta:
+        verbose_name_plural = 'Review'
+
+class Contact(models.Model):
+    nama = models.CharField(max_length=100)
+    email = models.EmailField()
+    subjek = models.CharField(max_length=100)
+    pesan = models.TextField()
+
+    def _str_(self):
+        return f"{self.nama} - {self.email} - {self.subjek}"
+
+    class Meta:
+        verbose_name_plural = 'Contact'

@@ -18,6 +18,7 @@
                 <!--Content-->
                 <div class="p-4">
                     <div class="mb-3">
+                        <strong><p style="font-size: 20px;">{{ object.nama_produk }}</p></strong>
                         <a href="">
                             <span class="badge bg-dark me-1">{{ object.get_kategori_display }}</span>
                         </a>
@@ -35,8 +36,19 @@
                         </a>
                         {% endif %}
                     </div>
+                    <!--Rating-->
+                    <strong><p style="font-size: 20px;">Rating </p></strong>
+
+                        <span class="fa fa-star {% if avg_rating > 0 %}checked{% endif %}"></span>
+                        <span class="fa fa-star {% if avg_rating > 1 %}checked{% endif %}"></span>
+                        <span class="fa fa-star {% if avg_rating > 2 %}checked{% endif %}"></span>
+                        <span class="fa fa-star {% if avg_rating > 3 %}checked{% endif %}"></span>
+                        <span class="fa fa-star {% if  avg_rating > 4 %}checked {% endif %}"></span>
+                        
+                        <br>
 
                     <p class="lead">
+                        <strong><p style="font-size: 20px;">Price </p></strong>
                         {% if object.harga_diskon %}
                         <span class="me-1">
                             <del>${{ object.harga }}</del>
@@ -83,23 +95,55 @@
         <div class="row">
             <!--Grid column-->
             <div class="col-lg-4 col-md-12 mb-4">
-                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/11.jpg" class="img-fluid" alt="" />
+                {% if object.addonsGambarSatu %}
+                <img src="{{ object.addonsGambarSatu.url }}" class="img-fluid" alt="" />
+                {% endif %}
             </div>
             <!--Grid column-->
 
             <!--Grid column-->
             <div class="col-lg-4 col-md-6 mb-4">
-                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/12.jpg" class="img-fluid" alt="" />
+                {% if object.addonsGambarSatu %}
+                <img src="{{ object.addonsGambarDua.url }}" class="img-fluid" alt="" />
+                {% endif %}
             </div>
             <!--Grid column-->
 
             <!--Grid column-->
             <div class="col-lg-4 col-md-6 mb-4">
-                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/13.jpg" class="img-fluid" alt="" />
+                {% if object.addonsGambarSatu %}
+                <img src="{{ object.addonsGambarTiga.url }}" class="img-fluid" alt="" />
+                {% endif %}
             </div>
             <!--Grid column-->
         </div>
+        <!--List User Review-->
+        {% if object.review_set.all %}
+        <h2>User Reviews</h2>
+    <div class="card">
+				<div class="row d-flex">
+					<div class="d-flex flex-column">
+                        {% for review in object.review_set.all %}
+						<h3 class="mt-2 mb-0">{{ review.user }}</h3>
+						<div>
+							<p class="text-left"><span class="text-muted">{{ review.rating }}</span>
+                                <span class="fa fa-star {% if review.rating > 0 %}checked{% endif %}"></span>
+                                <span class="fa fa-star {% if review.rating > 1 %}checked{% endif %}"></span>
+                                <span class="fa fa-star {% if review.rating > 2 %}checked{% endif %}"></span>
+                                <span class="fa fa-star {% if review.rating > 3 %}checked{% endif %}"></span>
+                                <span class="fa fa-star {% if  review.rating > 4 %}checked {% endif %}"></span></p>
+						</div>
+					</div>
+                    <div class="row text-left">
+					<p class="content">{{ review.komentar }}</p>
+                        {% endfor %}
+				</div>
+				</div>
+			</div>
+            {% endif %}
+
         <!--Grid row-->
+    </div>
     </div>
 </main>
 <!--Main layout-->

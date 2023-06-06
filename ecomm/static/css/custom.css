@@ -23,3 +23,7 @@ color: #E53935
 .sale-badge {
 background-color: #E53935
 }
+
+.checked {
+  color: orange;
+}
