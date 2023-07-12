@@ -40,7 +40,7 @@
                     </a>
                 </td>
                 <td>
-                    <div>$
+                    <div>Rp
                         {% if pItem.produk_item.harga_diskon %}
                         {{ pItem.produk_item.harga_diskon }}
                         {% else %}
@@ -51,10 +51,10 @@
                 <td>{{ pItem.quantity }}</td>
                 <td>                
                     {% if pItem.produk_item.harga_diskon %}
-                    ${{ pItem.get_total_harga_diskon_item }}
-                    <span class="badge badge-danger rounded-pill d-inline">Hemat ${{ pItem.get_total_hemat_item }}</span>
+                    Rp{{ pItem.get_total_harga_diskon_item }}
+                    <span class="badge badge-danger rounded-pill d-inline">Hemat Rp{{ pItem.get_total_hemat_item }}</span>
                     {% else %}
-                    ${{ pItem.get_total_harga_item }}
+                    Rp{{ pItem.get_total_harga_item }}
                     {% endif %}
                 </td>
                 <td>
@@ -83,9 +83,9 @@
             {% if keranjang.get_total_harga_order %}
             <tr>
                 <td colspan="4"><b>Total Belanja</b></td>
-                <td><b>${{ keranjang.get_total_harga_order }}</b>
+                <td><b>Rp{{ keranjang.get_total_harga_order }}</b>
                     {% if keranjang.get_total_hemat_order %}
-                    <span class="badge badge-danger">Hemat ${{ keranjang.get_total_hemat_order }}</span>
+                    <span class="badge badge-danger">Hemat Rp{{ keranjang.get_total_hemat_order }}</span>
                     {% endif %}
                 </td>
             </tr>

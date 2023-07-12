@@ -35,8 +35,10 @@
                         <li class="nav-item active">
                             <a class="nav-link text-white" href="/">All</a>
                         </li>
+                        <!-- Looping for list category -->
                         {% for category_display, category_value in PILIHAN_KATEGORI %}
                         <li class="nav-item">
+                          <!-- Category Value Via Query Param-->
                             <a class="nav-link text-white" href="/?category={{ category_value }}">{{ category_value }}</a>
                         </li>
                         {% endfor %}
@@ -91,13 +93,13 @@
                       <h6 class="mb-3 price">
                         {% if pItem.harga_diskon %}
                           <span class="me-1">
-                          <del>${{ pItem.harga }}</del>
+                          <del>Rp{{ pItem.harga }}</del>
                           </span>
                           <br>
-                          <span>${{ pItem.harga_diskon }}</span>
+                          <span>Rp{{ pItem.harga_diskon }}</span>
                         {% else %}
                           <br>
-                          <span>${{ pItem.harga }}</span>
+                          <span>Rp{{ pItem.harga }}</span>
                         {% endif %}
                       </h6>
                     </div>

@@ -27,8 +27,8 @@ User = get_user_model()
 
 class ProdukItem(models.Model):
     nama_produk = models.CharField(max_length=100)
-    harga = models.FloatField()
-    harga_diskon = models.FloatField(blank=True, null=True)
+    harga = models.IntegerField()
+    harga_diskon = models.IntegerField(blank=True, null=True)
     slug = models.SlugField(unique=True)
     deskripsi = models.TextField()
     gambar = models.ImageField(upload_to='product_pics')
@@ -39,7 +39,7 @@ class ProdukItem(models.Model):
     addonsGambarTiga = models.ImageField(upload_to='product_pics', blank=True, null=True)
 
     def __str__(self):
-        return f"{self.nama_produk} - ${self.harga}"
+        return f"{self.nama_produk} - Rp{self.harga}"
 
     def get_absolute_url(self):
         return reverse("toko:produk-detail", kwargs={

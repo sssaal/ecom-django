@@ -233,7 +233,7 @@ def remove_from_cart(request, slug):
     else:
         return redirect('/accounts/login')
 
-# @csrf_exempt
+# @csrf_exemptß
 def paypal_return(request):
     if request.user.is_authenticated:
         try:
@@ -273,7 +273,7 @@ class SearchListView(generic.ListView):
     def get_queryset(self):
         search = self.request.GET.get('q')
         if search:
-            queryset = ProdukItem.objects.filter(nama_produk__contains=search)
+            queryset = ProdukItem.objects.filter(nama_produk__icontains=search)
         else:
             queryset = ProdukItem.objects.all()
         return queryset

@@ -51,11 +51,11 @@
                         <strong><p style="font-size: 20px;">Price </p></strong>
                         {% if object.harga_diskon %}
                         <span class="me-1">
-                            <del>${{ object.harga }}</del>
+                            <del>Rp{{ object.harga }}</del>
                         </span>
-                        <span>${{ object.harga_diskon }}</span>
+                        <span>Rp{{ object.harga_diskon }}</span>
                         {% else %}
-                        <span>${{ object.harga }}</span>
+                        <span>Rp{{ object.harga }}</span>
                         {% endif %}
                     </p>
 
